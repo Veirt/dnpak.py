@@ -2,17 +2,18 @@ import binascii
 import os
 import struct
 import zlib
+from typing import Final, List
 
 
 class EtFile:
-	__filedata = None
-	__filedatacomp = None
-	__filesize = None
-	__filesizecomp = None
-	__location = None
-	__offset = None
+	__filedata: bytes = None
+	__filedatacomp: bytes = None
+	__filesize: int = None
+	__filesizecomp: int = None
+	__location: str = None
+	__offset: int = None
 
-	def __init__(self, file_name, location):
+	def __init__(self, file_name: str, location: str):
 		self.__filesize = os.stat(file_name).st_size
 
 		with open(file_name, "rb") as handle:
@@ -25,10 +26,10 @@ class EtFile:
 	def get_file_data(self):
 		return self.__filedatacomp
 
-	def set_offset(self, offset):
+	def set_offset(self, offset: int):
 		self.__offset = offset
 
-	def get_binary(self):
+	def get_binary(self) -> bytes:
 		data = self.__location.encode('utf-8')
 		data += struct.pack("<x") * (256 - len(self.__location))
 		data += struct.pack("<I", int(self.__filesizecomp))
@@ -43,21 +44,37 @@ class EtFile:
 
 class EtFileSystem:
 	__file = None
-	__current_file = None
+	__current_file: str = None
 
-	HEADER_MAGIC = "EyedentityGames Packing File 0.1"
-	HEADER_VERSION = 0xB
-	FILE_COUNT = 123654
-	FILE_OFFSET = 8888
+	HEADER_MAGIC: Final[str] = "EyedentityGames Packing File 0.1"
+	HEADER_VERSION: Final[int] = 0xB
+	FILE_COUNT: Final[int] = 0
+	FILE_OFFSET: Final[int] = 0
 
-	__files = []
+	__files: List[EtFile] = []
 
-	def __init__(self, file_name):
+	def __init__(self, file_name: str):
+		"""
+		Write the specified pak in binary mode
+
+		:param file_name: File path for pak
+		:type file_name: str
+		"""
+
 		self.__file = open(file_name, 'wb')
 		self.__current_file = file_name
 		self.write_header()
 
 	def add_file(self, file_name, location):
+		"""
+		Add the specified file to the pak
+
+		:param file_name: Path of the specified file
+		:type file_name: str
+		:param location: Location of the file that will be put in the pak
+		:type location: str
+		"""
+
 		if not os.path.exists(file_name):
 			raise FileNotFoundError("File doesn't exist")
 
