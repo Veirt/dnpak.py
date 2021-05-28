@@ -58,10 +58,10 @@ class EtFileSystem:
 		self.write_header()
 
 	def add_file(self, file_name, location):
-		if os.path.exists(file_name):
-			self.__files.append(EtFile(file_name, location))
-		else:
+		if not os.path.exists(file_name):
 			raise FileNotFoundError("File doesn't exist")
+
+		self.__files.append(EtFile(file_name, location))
 
 	def close_file_system(self):
 		self.write_data()
@@ -95,8 +95,3 @@ class EtFileSystem:
 		self.rewrite_header()
 		for f in self.__files:
 			self.__file.write(f.get_binary())
-
-
-pak = EtFileSystem("mine.pak")
-pak.add_file("resource/ext/accounteffecttable.dnt", "\\resource\\ext\\accounteffecttable.dnt")
-pak.close_file_system()
