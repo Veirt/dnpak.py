@@ -50,8 +50,13 @@ class EtFileSystem:
         offset_now = 0
         for f in range(cls.FILE_COUNT):
             cls.__file.seek(cls.FILE_OFFSET + offset_now)
-            file = EtFile(location=cls.__file.read(256).decode(
-                "utf-8", "ignore").split("\x00", 1)[0])
+
+            # Sanitize the file name
+            location = cls.__file.read(256).decode("utf-8", "ignore").split("\x00", 1)[0]
+            if not location.isalnum() or location in "._-":
+                location = "".join(x for x in location if (x.isalnum() or x in "/\\._- "))
+
+            file = EtFile(location=location)
 
             file_info = []
             for i in range(4):
