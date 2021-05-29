@@ -36,7 +36,7 @@ class EtFileSystem:
 
     @classmethod
     def read(cls, file_name: str):
-        cls.__file = open(file_name, "rb")
+        cls.__file = open(file_name, "rb+")
 
         cls.__file.seek(260)
         cls.FILE_COUNT = struct.unpack(
