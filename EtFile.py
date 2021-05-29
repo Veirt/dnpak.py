@@ -19,10 +19,17 @@ class EtFile:
         if file_name is not None:
             self.__filesize = os.stat(file_name).st_size
 
-            with open(file_name, "rb") as handle:
-                self.__filedata = handle.read(self.__filesize)
+            try:
+                with open(file_name, "rb") as handle:
+                    self.__filedata = handle.read(self.__filesize)
+            except FileNotFoundError:
+                raise FileNotFoundError
 
-            self.__filedatacomp = zlib.compress(self.__filedata, 1)
+            try:
+                self.__filedatacomp = zlib.compress(self.__filedata, 1)
+            except zlib.error as err:
+                raise err
+
             self.__filesizecomp = len(binascii.hexlify(
                 self.__filedatacomp)) // 2
 
@@ -40,7 +47,10 @@ class EtFile:
         self.__filedatacomp = filedatacomp
 
     def get_decompressed_data(self):
-        return zlib.decompress(self.__filedatacomp)
+        try:
+            return zlib.decompress(self.__filedatacomp)
+        except zlib.error as err:
+            raise err
 
     def get_file_data(self):
         return self.__filedatacomp
