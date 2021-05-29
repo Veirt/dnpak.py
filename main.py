@@ -3,7 +3,8 @@ import os
 import struct
 import zlib
 from pathlib import Path
-from typing import Final, List
+from typing import Final
+from typing import List
 
 
 class EtFile:
