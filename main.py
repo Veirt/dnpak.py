@@ -25,14 +25,16 @@ class EtFile:
                 self.__filedata = handle.read(self.__filesize)
 
             self.__filedatacomp = zlib.compress(self.__filedata, 1)
-            self.__filesizecomp = len(binascii.hexlify(self.__filedatacomp)) // 2
+            self.__filesizecomp = len(binascii.hexlify(
+                self.__filedatacomp)) // 2
 
         self.location = str(Path(location))
 
     def set_offset(self, offset: int):
         self.__offset = offset
 
-    def set_file_info(self, filesizecomp, filesize, alloc_size, offset, filedatacomp):
+    def set_file_info(self, filesizecomp, filesize, alloc_size, offset,
+                      filedatacomp):
         self.__filesizecomp = filesizecomp
         self.__filesize = filesize
         self.__alloc_size = alloc_size
@@ -90,9 +92,9 @@ class EtFileSystem:
         cls.__file = open(file_name, "rb")
 
         cls.__file.seek(260)
-        cls.FILE_COUNT = struct.unpack("<I", cls.__file.read(4))[
-            0
-        ]  # [0] because the return type is a tuple
+        cls.FILE_COUNT = struct.unpack(
+            "<I",
+            cls.__file.read(4))[0]  # [0] because the return type is a tuple
 
         cls.__file.seek(264)
         cls.FILE_OFFSET = struct.unpack("<I", cls.__file.read(4))[0]
@@ -101,11 +103,8 @@ class EtFileSystem:
         offset_now = 0
         for f in range(cls.FILE_COUNT):
             cls.__file.seek(cls.FILE_OFFSET + offset_now)
-            file = EtFile(
-                location=cls.__file.read(256)
-                .decode("utf-8", "ignore")
-                .split("\x00", 1)[0]
-            )
+            file = EtFile(location=cls.__file.read(256).decode(
+                "utf-8", "ignore").split("\x00", 1)[0])
 
             file_info = []
             for i in range(4):
@@ -126,7 +125,8 @@ class EtFileSystem:
         folder_name = self.__current_file[:-4]  # :-4 to remove ".pak"
 
         for file in self.__files:
-            os.makedirs(os.path.dirname(f"{folder_name}{file.location}"), exist_ok=True)
+            os.makedirs(os.path.dirname(f"{folder_name}{file.location}"),
+                        exist_ok=True)
             with open(f"{folder_name}{file.location}", "wb") as f:
                 f.write(file.get_decompressed_data())
 
