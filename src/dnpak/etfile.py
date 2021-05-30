@@ -48,8 +48,8 @@ class EtFile:
     def set_offset(self, offset: int):
         self.__offset = offset
 
-    def set_file_info(self, filesizecomp: int, filesize: int, alloc_size: int, offset: int,
-                      filedatacomp: bytes):
+    def set_file_info(self, filesizecomp: int, filesize: int,
+                      alloc_size: int, offset: int, filedatacomp: bytes):
         """
         Set file info
 
@@ -79,7 +79,7 @@ class EtFile:
         return self.__filesize
 
     def get_compressed_file_size(self) -> int:
-        return  self.__filesizecomp
+        return self.__filesizecomp
 
     def get_decompressed_data(self) -> bytes:
         """
@@ -109,7 +109,8 @@ class EtFile:
         **Location**: Location of file inside pak - FBSTR[256] \n
         **Raw Size**: Size of file after compressed - UINT32 \n
         **Real Size**: Size of file before compressed - UINT32 \n
-        **Compressed Size**: Size of file after compressed (Should be the same as Raw Size) - UINT32 \n
+        **Compressed Size**: Size of file after compressed
+        (Should be the same as Raw Size) - UINT32 \n
         **Offset**: Pointer to the location of compressed data - UINT32
         **SeedValue**: ? - UINT32 \n
         **Checksum**: ? - UINT32 \n

@@ -27,21 +27,21 @@ def create_pak():
 
 
 def test_create_error_pak():
-    with pytest.raises(FileNotFoundError) as err:
+    with pytest.raises(FileNotFoundError):
         pak = EtFileSystem.write("pak2.test.pak")
         pak.add_file("tests/unavailable.dnt", "/resource/ext/unavailable.dnt")
         pak.close_file_system()
 
 
 def test_error_pak_location():
-    with pytest.raises(NameError) as err:
+    with pytest.raises(NameError):
         pak = EtFileSystem.write("pak3.test.pak")
         pak.add_file(file_list[0]["path"], "resource/etc/freeze.msh")
         pak.close_file_system()
 
 
 def test_read_error_pak():
-    with pytest.raises(FileNotFoundError) as err:
+    with pytest.raises(FileNotFoundError):
         pak = EtFileSystem.read("unavailable.test.pak")
         pak.extract()
         pak.close_file_system()

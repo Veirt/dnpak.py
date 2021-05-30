@@ -41,6 +41,6 @@ def test_check_file_location():
 
 
 def test_error_path():
-    with pytest.raises(FileNotFoundError) as err:
-        data = EtFile("tests/test_etfilesystem/resource/ext/unavailable.dnt",
-                      "/unavailable.dnt")
+    with pytest.raises(FileNotFoundError):
+        EtFile("tests/test_etfilesystem/resource/ext/unavailable.dnt",
+               "/unavailable.dnt")
