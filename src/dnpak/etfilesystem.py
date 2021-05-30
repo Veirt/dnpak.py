@@ -1,6 +1,6 @@
 import os
 import struct
-from .EtFile import EtFile
+from .etfile import EtFile
 from typing import Final
 from typing import List
 
