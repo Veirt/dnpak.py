@@ -5,12 +5,12 @@ from src.dnpak.etfilesystem import EtFileSystem
 file_list = [
     {
         "path": "tests/test_etfilesystem/resource/etc/freeze.msh",
-        "location": "/resource/etc/freeze.msh"
+        "location": "/resource/etc/freeze.msh",
     },
     {
         "path": "tests/test_etfilesystem/resource/etc/freeze.skn",
-        "location": "/resource/etc/freeze.skn"
-    }
+        "location": "/resource/etc/freeze.skn",
+    },
 ]
 
 
