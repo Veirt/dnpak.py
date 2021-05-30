@@ -6,6 +6,7 @@ from typing import List
 
 
 class EtFileSystem:
+    __type = None
     __file = None
     __current_file: str = None
 
@@ -30,6 +31,8 @@ class EtFileSystem:
         :type file_name: str
         """
 
+        cls.__type = "write"
+
         cls.__file = open(file_name, "wb")
         cls.write_header()
         return cls(file_name)
@@ -42,6 +45,8 @@ class EtFileSystem:
         :param file_name: PAK file name to read
         :type file_name: str
         """
+
+        cls.__type = "read"
 
         cls.__file = open(file_name, "rb+")
 
@@ -108,6 +113,8 @@ class EtFileSystem:
         :type location: str
         """
 
+        self.__type = "write"
+
         if not os.path.exists(file_name):
             raise FileNotFoundError("File doesn't exist")
 
@@ -118,13 +125,16 @@ class EtFileSystem:
 
     def close_file_system(self):
         """
-        Required every time you add files.
+        Required every time you read or write PAK
 
         Write header, compressed data, and file information to PAK
         """
 
-        self.__write_data()
-        self.__write_footer()
+        if self.__type == "write":
+            self.__write_data()
+            self.__write_footer()
+
+        self.__files.clear()
         self.__file.close()
 
     @classmethod
