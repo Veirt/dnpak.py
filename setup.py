@@ -1,6 +1,9 @@
 from setuptools import setup
 
-VERSION = "1.0.0"
+with open("README.md") as file:
+    LONG_DESCRIPTION = file.read()
+
+VERSION = "1.0.1-1"
 DESCRIPTION = "A python package to manipulate DragonNest pak file"
 
 setup(
@@ -10,11 +13,15 @@ setup(
       author_email="exlog@protonmail.com",
       url="https://github.com/ExLog/dnpak-py",
       description=DESCRIPTION,
+      long_description=LONG_DESCRIPTION,
+      long_description_content_type='text/markdown',
       license="WTFPL",
       keywords=["dragonnest"],
       packages=["dnpak"],
       package_dir={"": "src"},
       classifiers=[
             "Programming Language :: Python :: 3.6",
+            "Intended Audience :: Developers",
+            "License :: Other/Proprietary License"
       ]
 )

@@ -17,25 +17,32 @@ class EtFileSystem:
     __files: List[EtFile] = []
 
     def __init__(self, file_name: str):
-        """
-        Write the specified pak in binary mode
-
-        :param file_name: File path for pak
-        :type file_name: str
-        """
-
         self.__current_file = file_name
         if not file_name or file_name[-4:] != ".pak":
             raise NameError("Invalid file name")
 
     @classmethod
     def write(cls, file_name: str):
+        """
+        Write the specified PAK in binary mode
+
+        :param file_name: PAK file name to write
+        :type file_name: str
+        """
+
         cls.__file = open(file_name, "wb")
         cls.write_header()
         return cls(file_name)
 
     @classmethod
     def read(cls, file_name: str):
+        """
+        Read (and write) the specified PAK in binary mode
+
+        :param file_name: PAK file name to read
+        :type file_name: str
+        """
+
         cls.__file = open(file_name, "rb+")
 
         cls.__file.seek(260)
@@ -74,6 +81,10 @@ class EtFileSystem:
         return cls(file_name)
 
     def extract(self):
+        """
+        Extract compressed data inside PAK
+        """
+
         folder_name = self.__current_file[:-4]  # :-4 to remove ".pak"
 
         for file in self.__files:
@@ -88,7 +99,9 @@ class EtFileSystem:
 
         :param file_name: Path of the specified file
         :type file_name: str
-        :param location: Location of the file that will be put in the pak. Must start with slash ('/') or backslash ('\')
+
+        :param location: Location of the file that
+        will be put in the pak. Must start with slash ('/') or backslash ('\')
         :type location: str
         """
 
@@ -101,12 +114,22 @@ class EtFileSystem:
         self.__files.append(EtFile(file_name, location))
 
     def close_file_system(self):
+        """
+        Required every time you add files.
+
+        Write header, compressed data, and file information to PAK
+        """
+
         self.__write_data()
         self.__write_footer()
         self.__file.close()
 
     @classmethod
     def write_header(cls):
+        """
+        Write header with dummy file count and offset
+        """
+
         cls.__file.write(bytes(cls.HEADER_MAGIC, "utf-8"))
         cls.__file.write(struct.pack("<x") * 224)
         cls.__file.write(struct.pack("<I", cls.HEADER_VERSION))
@@ -116,6 +139,10 @@ class EtFileSystem:
         cls.__file.write(struct.pack("<x") * 752)
 
     def __rewrite_header(self):
+        """
+        Rewrite header with real file count and offset
+        """
+
         self.FILE_COUNT = len(self.__files)
         self.FILE_OFFSET = self.__file.tell()
 
@@ -125,11 +152,17 @@ class EtFileSystem:
         self.__file.seek(self.FILE_OFFSET, os.SEEK_SET)
 
     def __write_data(self):
+        """
+        Write compressed data to PAK
+        """
         for f in self.__files:
             f.set_offset(self.__file.tell())
             self.__file.write(f.get_file_data())
 
     def __write_footer(self):
+        """
+        Write file information to PAK
+        """
         self.__rewrite_header()
         for f in self.__files:
             self.__file.write(f.get_binary())
