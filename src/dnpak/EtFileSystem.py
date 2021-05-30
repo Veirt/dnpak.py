@@ -90,8 +90,11 @@ class EtFileSystem:
         for file in self.__files:
             os.makedirs(os.path.dirname(f"{folder_name}\\{file.location}"),
                         exist_ok=True)
-            with open(f"{folder_name}{file.location}", "wb") as f:
-                f.write(file.get_decompressed_data())
+            try:
+                with open(f"{folder_name}{file.location}", "wb") as f:
+                    f.write(file.get_decompressed_data())
+            except PermissionError:
+                pass
 
     def add_file(self, file_name, location):
         """
