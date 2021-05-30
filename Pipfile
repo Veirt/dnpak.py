@@ -1,0 +1,16 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+
+[dev-packages]
+pytest = "*"
+build = "*"
+twine = "*"
+
+[scripts]
+build = "python -m build"
+dev = "pip install -e ."
+publish = "twine upload --skip-existing dist/*"
