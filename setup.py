@@ -3,7 +3,7 @@ from setuptools import setup
 with open("README.md") as file:
     LONG_DESCRIPTION = file.read()
 
-VERSION = "1.0.2"
+VERSION = "1.0.3"
 DESCRIPTION = "A python package to manipulate DragonNest pak file"
 
 setup(
