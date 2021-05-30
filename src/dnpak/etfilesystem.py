@@ -72,15 +72,19 @@ class EtFileSystem:
 
             file = EtFile(location=location)
 
-            file_info = []
-            for _ in range(4):
-                file_info.append(struct.unpack("<I", cls.__file.read(4))[0])
+            file_info = {
+                "filesizecomp": struct.unpack("<I", cls.__file.read(4))[0],
+                "filesize": struct.unpack("<I", cls.__file.read(4))[0],
+                "alloc_size": struct.unpack("<I", cls.__file.read(4))[0],
+                "offset": struct.unpack("<I", cls.__file.read(4))[0],
+            }
 
             # seek to offset, and read till allocSize
-            cls.__file.seek(file_info[3])
-            file_info.append(cls.__file.read(file_info[2]))
+            cls.__file.seek(file_info["offset"])
+            file_info["filedatacomp"] = cls.__file.read(
+                file_info["alloc_size"])
 
-            file.set_file_info(*file_info)
+            file.set_file_info(**file_info)
 
             cls.__files.append(file)
             offset_now += 316
