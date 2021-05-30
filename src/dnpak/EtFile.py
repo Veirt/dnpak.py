@@ -75,6 +75,12 @@ class EtFile:
         self.__offset = offset
         self.__filedatacomp = filedatacomp
 
+    def get_file_size(self) -> int:
+        return self.__filesize
+
+    def get_compressed_file_size(self) -> int:
+        return  self.__filesizecomp
+
     def get_decompressed_data(self) -> bytes:
         """
         Get the decompressed data
@@ -87,7 +93,7 @@ class EtFile:
         except zlib.error as err:
             raise err
 
-    def get_file_data(self) -> bytes:
+    def get_compressed_data(self) -> bytes:
         """
         Get the compressed data
 
@@ -96,7 +102,7 @@ class EtFile:
         """
         return self.__filedatacomp
 
-    def get_binary(self) -> bytes:
+    def get_file_info(self) -> bytes:
         """
         Get the file information:
 
