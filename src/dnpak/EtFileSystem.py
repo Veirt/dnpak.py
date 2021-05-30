@@ -88,6 +88,12 @@ class EtFileSystem:
 	def extract(self, mode = None, directory=None):
 		"""
 		Extract compressed data inside PAK
+
+		:param mode: Use 'strict' mode to prevent extracting EtPak removed files
+		:type mode: str
+
+		:param directory: Specified directory name for theh extracted files
+		:type mode: str
 		"""
 
 		folder_name = directory if directory is not None else self.__current_file[:-4]  # :-4 to remove ".pak"
@@ -144,6 +150,12 @@ class EtFileSystem:
 	def write_header(cls):
 		"""
 		Write header with dummy file count and offset
+
+		**Signature**: PAK file magic number/identifier string - FBSTR[256] \n
+		**Version**: ? Always 11 0x0B - INT32 \n
+		**File Count**: Number of files in this PAK - UINT32 \n
+		**File Information Offset**: Pointer to the location of file information list - UINT32 \n
+		**Pading**: Padding bytes to make the PAK header 1024bytes in total - UINT8
 		"""
 
 		cls.__file.write(bytes(cls.HEADER_MAGIC, "utf-8"))

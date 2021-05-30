@@ -30,12 +30,13 @@ import dnpak
 pak = dnpak.EtFileSystem.write("filename.pak")
 pak.add_file("path/to/file", "/file/location/in/pak/")
 pak.add_file("another/file", "/another/file/location/in/pak")
-pak.close_file_system()  # Make sure to close file after adding files
+pak.close_file_system()  # Make sure to close file
 ```
 ### Read PAK and extract files inside
 ```python
 pak = dnpak.EtFileSystem.read("filename.pak")
 pak.extract()
+pak.close_file_system()
 ```
 
 ## Developing
