@@ -85,12 +85,12 @@ class EtFileSystem:
 
 		return cls(file_name)
 
-	def extract(self, mode = None):
+	def extract(self, mode = None, directory=None):
 		"""
 		Extract compressed data inside PAK
 		"""
 
-		folder_name = self.__current_file[:-4]  # :-4 to remove ".pak"
+		folder_name = directory if directory is not None else self.__current_file[:-4]  # :-4 to remove ".pak"
 
 		for file in self.__files:
 			if mode == "strict" and file.get_file_size() == 0 and file.get_compressed_file_size() == 0:
