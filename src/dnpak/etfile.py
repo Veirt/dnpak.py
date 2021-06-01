@@ -69,11 +69,11 @@ class EtFile:
         :type filedatacomp: bytes
         """
 
-        self.__filesizecomp = filesizecomp or self.__filesizecomp
-        self.__filesize = filesize or self.__filesize
-        self.__alloc_size = alloc_size or self.__alloc_size
-        self.__offset = offset or self.__offset
-        self.__filedatacomp = filedatacomp or self.__filedatacomp
+        self.__filesizecomp = filesizecomp if filesizecomp is not None else self.__filesizecomp
+        self.__filesize = filesize if filesize is not None else self.__filesize
+        self.__alloc_size = alloc_size if alloc_size is not None else self.__alloc_size
+        self.__offset = offset if offset is not None else self.__offset
+        self.__filedatacomp = filedatacomp if filedatacomp is not None else self.__filedatacomp
 
     def get_location(self) -> str:
         return self.__location
@@ -122,6 +122,7 @@ class EtFile:
         :rtype: bytes
         :return: Compressed data
         """
+
         data = self.__location.encode("utf-8")
         data += struct.pack("<x") * (256 - len(self.__location))
         data += struct.pack("<I", int(self.__filesizecomp))

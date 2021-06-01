@@ -124,11 +124,18 @@ class EtFileSystem:
     def get_files(self) -> list:
         return self.__files
 
-    def find_files(self, location: str) -> list:
-        filtered = filter(lambda file: file.get_location()
-                          == location, self.__files)
+    def find_file(self, location: str) -> EtFile:
+        """
+        :param location: Location of the file in pak
+        :type location: str
 
-        return list(filtered)
+        :return: EtFile object that match the location
+        :rtype: EtFile
+        """
+
+        filtered_file = next(filter(lambda file: file.get_location() == location, self.__files), None)
+
+        return filtered_file
 
     def add_file(self, file_name, location):
         """
