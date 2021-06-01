@@ -111,13 +111,24 @@ class EtFileSystem:
                     and file.get_compressed_file_size() == 0:
                 pass
             else:
-                os.makedirs(os.path.dirname(f"{folder_name}\\{file.location}"),
-                            exist_ok=True)
+                os.makedirs(
+                    os.path.dirname(f"{folder_name}\\{file.get_location()}"),
+                    exist_ok=True)
                 try:
-                    with open(f"{folder_name}{file.location}", "wb") as f:
+                    with open(f"{folder_name}{file.get_location()}", "wb") \
+                            as f:
                         f.write(file.get_decompressed_data())
                 except PermissionError:
                     pass
+
+    def get_files(self) -> list:
+        return self.__files
+
+    def find_files(self, location: str) -> list:
+        filtered = filter(lambda file: file.get_location()
+                          == location, self.__files)
+
+        return list(filtered)
 
     def add_file(self, file_name, location):
         """
@@ -141,6 +152,11 @@ class EtFileSystem:
 
         self.__files.append(EtFile(file_name, location))
 
+    def edit_file(self, file: EtFile, **file_info):
+        self.__type = "write"
+        file_index = self.__files.index(file)
+        self.__files[file_index].set_file_info(**file_info)
+
     def close_file_system(self):
         """
         Required every time you read or write PAK
@@ -149,6 +165,7 @@ class EtFileSystem:
         """
 
         if self.__type == "write":
+            self.__file.seek(1024)
             self.__write_data()
             self.__write_footer()
 

@@ -37,7 +37,7 @@ def test_check_file_location():
     for file in file_list:
         data_after = EtFile(file["path"], file["location"])
 
-        assert data_after.location == str(Path(file["location"]))
+        assert data_after.get_location() == str(Path(file["location"]))
 
 
 def test_error_path():

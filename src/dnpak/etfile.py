@@ -6,8 +6,7 @@ from pathlib import Path
 
 
 class EtFile:
-    location: str = None
-
+    __location: str = None
     __filedata: bytes = None
     __filedatacomp: bytes = None
     __filesize: int = None
@@ -27,9 +26,9 @@ class EtFile:
         """
 
         if file_name is not None:
-            self.__filesize = os.stat(file_name).st_size
-
             try:
+                self.__filesize = os.stat(file_name).st_size
+
                 with open(file_name, "rb") as handle:
                     self.__filedata = handle.read(self.__filesize)
             except FileNotFoundError:
@@ -43,13 +42,14 @@ class EtFile:
             self.__filesizecomp = len(binascii.hexlify(
                 self.__filedatacomp)) // 2
 
-        self.location = str(Path(location))
+        self.__location = str(Path(location))
 
     def set_offset(self, offset: int):
         self.__offset = offset
 
-    def set_file_info(self, filesizecomp: int, filesize: int,
-                      alloc_size: int, offset: int, filedatacomp: bytes):
+    def set_file_info(self, filesizecomp: int = None, filesize: int = None,
+                      alloc_size: int = None, offset: int = None,
+                      filedatacomp: bytes = None):
         """
         Set file info
 
@@ -69,11 +69,14 @@ class EtFile:
         :type filedatacomp: bytes
         """
 
-        self.__filesizecomp = filesizecomp
-        self.__filesize = filesize
-        self.__alloc_size = alloc_size
-        self.__offset = offset
-        self.__filedatacomp = filedatacomp
+        self.__filesizecomp = filesizecomp or self.__filesizecomp
+        self.__filesize = filesize or self.__filesize
+        self.__alloc_size = alloc_size or self.__alloc_size
+        self.__offset = offset or self.__offset
+        self.__filedatacomp = filedatacomp or self.__filedatacomp
+
+    def get_location(self) -> str:
+        return self.__location
 
     def get_file_size(self) -> int:
         return self.__filesize
@@ -119,8 +122,8 @@ class EtFile:
         :rtype: bytes
         :return: Compressed data
         """
-        data = self.location.encode("utf-8")
-        data += struct.pack("<x") * (256 - len(self.location))
+        data = self.__location.encode("utf-8")
+        data += struct.pack("<x") * (256 - len(self.__location))
         data += struct.pack("<I", int(self.__filesizecomp))
         data += struct.pack("<I", self.__filesize)
         data += struct.pack("<I", int(self.__filesizecomp))
