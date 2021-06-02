@@ -165,7 +165,6 @@ def test_edit_file(tmp_path):
 
     pak = EtFileSystem.read(f"{tmp_path}\\pak1.test.pak")
     new_test_txt = pak.find_file(
-        EtFile(location="/test.txt").get_location()
-    ).get_decompressed_data()
+        EtFile(location="/test.txt").get_location()).get_decompressed_data()
 
     assert new_data == new_test_txt
