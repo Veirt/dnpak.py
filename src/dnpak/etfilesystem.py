@@ -1,5 +1,8 @@
+import binascii
 import os
 import struct
+import zlib
+
 from .etfile import EtFile
 from typing import Final
 from typing import List
@@ -159,10 +162,20 @@ class EtFileSystem:
 
         self.__files.append(EtFile(file_name, location))
 
-    def edit_file(self, file: EtFile, **file_info):
+    def edit_file(self, file: EtFile, filedata: bytes):
         self.__type = "write"
-        file_index = self.__files.index(file)
-        self.__files[file_index].set_file_info(**file_info)
+        try:
+            filedatacomp = zlib.compress(filedata, 1)
+            filesizecomp = len(binascii.hexlify(filedatacomp)) // 2
+            file_info = {
+                "filedatacomp": filedatacomp,
+                "filesizecomp": filesizecomp
+            }
+            file_index = self.__files.index(file)
+            print(file_info)
+            self.__files[file_index].set_file_info(**file_info)
+        except zlib.error as err:
+            raise err
 
     def close_file_system(self):
         """
