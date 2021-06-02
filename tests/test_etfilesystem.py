@@ -107,17 +107,31 @@ def test_read_pak_extract_directory():
     read_pak().close_file_system()
 
 
+def test_read_add_files():
+    pak = EtFileSystem.write("pak4.test.pak")
+    pak.add_files("tests/test_etfilesystem")
+    pak.close_file_system()
+
+    pak1 = EtFileSystem.read("pak4.test.pak")
+    pak2 = EtFileSystem.read("pak1.test.pak")
+
+    assert pak1.get_files() == pak2.get_files()
+
+    pak1.close_file_system()
+    pak2.close_file_system()
+
+
 def test_read_add_file():
     pak = EtFileSystem.read("pak1.test.pak")
 
     for file in file_list:
         pak.add_file(file["path"], file["location"])
 
+    assert pak.FILE_COUNT == 2
     assert len(pak.get_files()) == 4
     pak.close_file_system()
 
     assert pak.FILE_COUNT == 4
-    assert len(pak.get_files()) == 0
 
 
 def test_edit_file():
