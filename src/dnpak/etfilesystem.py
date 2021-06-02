@@ -4,6 +4,7 @@ import struct
 import zlib
 
 from .etfile import EtFile
+from glob import glob
 from typing import Final
 from typing import List
 
@@ -161,6 +162,17 @@ class EtFileSystem:
             raise NameError("File location must start with \"/\" or \"\\\" ")
 
         self.__files.append(EtFile(file_name, location))
+
+    def add_files(self, folder: str):
+        self.__type = "write"
+
+        if not os.path.exists(folder):
+            raise FileNotFoundError("Folder doesn't exist")
+
+        files = glob(f"{folder}/**/*.*", recursive=True)
+        locations = [file.replace(folder, "") for file in files]
+        for file, location in zip(files, locations):
+            self.__files.append(EtFile(file, location))
 
     def edit_file(self, file: EtFile, filedata: bytes):
         self.__type = "write"
