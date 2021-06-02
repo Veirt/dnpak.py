@@ -147,7 +147,8 @@ class EtFileSystem:
         :rtype: EtFile
         """
 
-        filtered_file = next(filter(lambda file: file.get_location() == location, self.__files), None)
+        filtered_file = next(
+            filter(lambda file: file.get_location() == location, self.__files), None)
 
         return filtered_file
 
