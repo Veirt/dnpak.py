@@ -37,6 +37,9 @@ class EtFileSystem:
 
         cls.__type = "write"
 
+        if os.path.exists(file_name):
+            raise FileExistsError("File already exists. Did you mean to read?")
+
         cls.__file = open(file_name, "wb")
         cls.write_header()
         return cls(file_name)
