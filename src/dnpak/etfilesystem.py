@@ -58,9 +58,9 @@ class EtFileSystem:
         cls.__file = open(file_name, "rb+")
 
         cls.__file.seek(260)
-        cls.FILE_COUNT = struct.unpack(
-            "<I",
-            cls.__file.read(4))[0]  # [0] because the return type is a tuple
+        cls.FILE_COUNT = struct.unpack("<I", cls.__file.read(4))[
+            0
+        ]  # [0] because the return type is a tuple
 
         cls.__file.seek(264)
         cls.FILE_OFFSET = struct.unpack("<I", cls.__file.read(4))[0]
@@ -71,11 +71,13 @@ class EtFileSystem:
             cls.__file.seek(cls.FILE_OFFSET + offset_now)
 
             # Sanitize the file name
-            location = cls.__file.read(256).decode(
-                "utf-8", "ignore").split("\x00", 1)[0]
+            location = (
+                cls.__file.read(256).decode("utf-8", "ignore").split("\x00", 1)[0]
+            )
             if not location.isalnum() or location in "._-":
-                location = "".join(x for x in location if (
-                    x.isalnum() or x in "/\\._- "))
+                location = "".join(
+                    x for x in location if (x.isalnum() or x in "/\\._- ")
+                )
 
             file = EtFile(location=location)
 
@@ -88,8 +90,7 @@ class EtFileSystem:
 
             # seek to offset, and read till allocSize
             cls.__file.seek(file_info["offset"])
-            file_info["filedatacomp"] = cls.__file.read(
-                file_info["alloc_size"])
+            file_info["filedatacomp"] = cls.__file.read(file_info["alloc_size"])
 
             file.set_file_info(**file_info)
 
@@ -110,20 +111,22 @@ class EtFileSystem:
         """
 
         # :-4 to remove ".pak"
-        folder_name = directory if directory is not None \
-            else self.__current_file[:-4]
+        folder_name = directory if directory is not None else self.__current_file[:-4]
 
         for file in self.__files:
-            if mode == "strict" and file.get_file_size() == 0 \
-                    and file.get_compressed_file_size() == 0:
+            if (
+                mode == "strict"
+                and file.get_file_size() == 0
+                and file.get_compressed_file_size() == 0
+            ):
                 pass
             else:
                 os.makedirs(
                     os.path.dirname(f"{folder_name}\\{file.get_location()}"),
-                    exist_ok=True)
+                    exist_ok=True,
+                )
                 try:
-                    with open(f"{folder_name}{file.get_location()}", "wb") \
-                            as f:
+                    with open(f"{folder_name}{file.get_location()}", "wb") as f:
                         f.write(file.get_decompressed_data())
                 except PermissionError:
                     pass
@@ -148,7 +151,8 @@ class EtFileSystem:
         """
 
         filtered_file = next(
-            filter(lambda file: file.get_location() == location, self.__files), None)
+            filter(lambda file: file.get_location() == location, self.__files), None
+        )
 
         return filtered_file
 
@@ -170,7 +174,7 @@ class EtFileSystem:
             raise FileNotFoundError("File doesn't exist")
 
         if location[0] != "/" and location[0] != "\\":
-            raise NameError("File location must start with \"/\" or \"\\\" ")
+            raise NameError('File location must start with "/" or "\\" ')
 
         self.__files.append(EtFile(file_name, location))
 
@@ -207,10 +211,7 @@ class EtFileSystem:
         try:
             filedatacomp = zlib.compress(filedata, 1)
             filesizecomp = len(binascii.hexlify(filedatacomp)) // 2
-            file_info = {
-                "filedatacomp": filedatacomp,
-                "filesizecomp": filesizecomp
-            }
+            file_info = {"filedatacomp": filedatacomp, "filesizecomp": filesizecomp}
             file_index = self.__files.index(file)
             print(file_info)
             self.__files[file_index].set_file_info(**file_info)
