@@ -1,8 +1,8 @@
 import os
-
 import pytest
 
 from src.dnpak.etfilesystem import EtFileSystem
+from src.dnpak.etfile import EtFile
 
 file_list = [
     {
@@ -107,12 +107,35 @@ def test_read_pak_extract_directory():
     read_pak().close_file_system()
 
 
-def test_other():
+def test_read_add_file():
     pak = EtFileSystem.read("pak1.test.pak")
 
     for file in file_list:
         pak.add_file(file["path"], file["location"])
 
+    assert len(pak.get_files()) == 4
     pak.close_file_system()
 
     assert pak.FILE_COUNT == 4
+    assert len(pak.get_files()) == 0
+
+
+def test_edit_file():
+    pak = EtFileSystem.read("pak1.test.pak")
+    pak.add_file("tests/test_etfilesystem/test.txt", "/test.txt")
+    pak.close_file_system()
+
+    pak = EtFileSystem.read("pak1.test.pak")
+    test_txt = pak.find_file(EtFile(location="/test.txt").get_location())
+    decompressed = test_txt.get_decompressed_data().decode("utf-8")
+
+    assert decompressed == "test"
+
+    new_data = "test change".encode("utf-8")
+    pak.edit_file(test_txt, new_data)
+    pak.close_file_system()
+
+    pak = EtFileSystem.read("pak1.test.pak")
+    new_test_txt = pak.find_file(EtFile(location="/test.txt").get_location()).get_decompressed_data()
+
+    assert new_data == new_test_txt

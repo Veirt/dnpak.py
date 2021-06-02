@@ -1,4 +1,5 @@
 import os
+import zlib
 from pathlib import Path
 
 import pytest
@@ -44,3 +45,13 @@ def test_error_path():
     with pytest.raises(FileNotFoundError):
         EtFile("tests/test_etfilesystem/resource/ext/unavailable.dnt",
                "/unavailable.dnt")
+
+
+def test_manual_compress():
+    for file in file_list:
+        compressed = EtFile(file["path"], file["location"]).get_compressed_data()
+        with open(file["path"], "rb") as f:
+            compressed_manual = zlib.compress(f.read(), 1)
+
+        assert compressed == compressed_manual
+
