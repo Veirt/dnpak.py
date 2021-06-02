@@ -3,7 +3,8 @@ import os
 import struct
 import zlib
 from glob import glob
-from typing import Final, List
+from typing import Final
+from typing import List
 
 from .etfile import EtFile
 
