@@ -1,8 +1,9 @@
 import os
+
 import pytest
 
-from src.dnpak.etfilesystem import EtFileSystem
 from src.dnpak.etfile import EtFile
+from src.dnpak.etfilesystem import EtFileSystem
 
 file_list = [
     {
