@@ -45,6 +45,13 @@ class EtFile:
         self.__location = str(Path(location))
 
     def set_offset(self, offset: int):
+        """
+        A setter for offset
+
+        :param offset: A pointer to the location of compressed data
+        :type offset: int
+        """
+
         self.__offset = offset
 
     def set_file_info(self, filesizecomp: int = None, filesize: int = None,
@@ -76,21 +83,43 @@ class EtFile:
         self.__filedatacomp = filedatacomp if filedatacomp is not None else self.__filedatacomp
 
     def get_location(self) -> str:
+        """
+        A getter for location
+
+        :return: Location of file inside pak
+        :rtype: str
+        """
+
         return self.__location
 
     def get_file_size(self) -> int:
+        """
+        A getter for file size before compressed
+
+        :return: Size of file before compressed
+        :rtype: int
+        """
+
         return self.__filesize
 
     def get_compressed_file_size(self) -> int:
+        """
+        A getter for file size after compressed
+
+        :return: Size of file after compressed
+        :rtype: int
+        """
+
         return self.__filesizecomp
 
     def get_decompressed_data(self) -> bytes:
         """
-        Get the decompressed data
+        A getter for the decompressed data
 
-        :rtype: bytes
         :return: Decompressed data
+        :rtype: bytes
         """
+
         try:
             return zlib.decompress(self.__filedatacomp)
         except zlib.error as err:
@@ -98,11 +127,12 @@ class EtFile:
 
     def get_compressed_data(self) -> bytes:
         """
-        Get the compressed data
+        A getter for the compressed data
 
         :rtype: bytes
         :return: Compressed data
         """
+
         return self.__filedatacomp
 
     def get_file_info(self) -> bytes:

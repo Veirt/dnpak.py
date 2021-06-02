@@ -125,7 +125,14 @@ class EtFileSystem:
                 except PermissionError:
                     pass
 
-    def get_files(self) -> list:
+    def get_files(self) -> List[EtFile]:
+        """
+        A getter for files inside pak
+
+        :return: List of EtFile objects
+        :rtype: List[EtFile]
+        """
+
         return self.__files
 
     def find_file(self, location: str) -> EtFile:
@@ -164,6 +171,13 @@ class EtFileSystem:
         self.__files.append(EtFile(file_name, location))
 
     def add_files(self, folder: str):
+        """
+        Add the all files inside specified folder to the pak
+
+        :param folder: Path of the folder
+        :type folder: str
+        """
+
         self.__type = "write"
 
         if not os.path.exists(folder):
@@ -175,6 +189,16 @@ class EtFileSystem:
             self.__files.append(EtFile(file, location))
 
     def edit_file(self, file: EtFile, filedata: bytes):
+        """
+        Edit the specified EtFile object data
+
+        :param file: Object of EtFile that will be edited
+        :type file: EtFile
+
+        :param filedata: File data that will be written
+        :type filedata: bytes
+        :return:
+        """
         self.__type = "write"
         try:
             filedatacomp = zlib.compress(filedata, 1)

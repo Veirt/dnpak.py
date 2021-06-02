@@ -10,7 +10,8 @@ Based on data definitions from [vincentzhang96/DragonNestFileFormats](http://vin
 - [Installation](#installation)
 - [Getting Started](#getting-started)
   - [Write a new PAK and add files to it](#write-a-new-pak-and-add-files-to-it)
-  - [Read PAK and extract files inside](#read-pak-and-extract-files-inside-it)
+  - [Write a new PAK and add all files inside a folder](#write-a-new-pak-and-add-all-files-inside-a-folder)
+  - [Read PAK and extract files inside](#read-pak-and-extract-files-inside)
 - [Developing](#developing)
   - [Install package locally](#install-package-locally)
   - [Build package](#build-package)
@@ -33,9 +34,16 @@ With this package you can write and read to pak file
 import dnpak
 
 pak = dnpak.EtFileSystem.write("filename.pak")
-pak.add_file("path/to/file", "/file/location/in/pak/")
+pak.add_file("path/to/file", "/file/location/in/pak")
 pak.add_file("another/file", "/another/file/location/in/pak")
 pak.close_file_system()  # Make sure to close file
+```
+
+### Write a new PAK and add all files inside a folder
+```python
+pak = dnpak.EtFileSystem.write("filename.pak")
+pak.add_files("path/to/folder")
+pak.close_file_system()
 ```
 
 ### Read PAK and extract files inside
