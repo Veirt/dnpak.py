@@ -26,6 +26,13 @@ class EtFileSystem:
         if not file_name or file_name[-4:] != ".pak":
             raise NameError("Invalid file name")
 
+    def __repr__(self):
+        return str({
+            "current_file": self.__current_file,
+            "file_count": self.FILE_COUNT,
+            "file_offset": self.FILE_OFFSET,
+        })
+
     @classmethod
     def write(cls, file_name: str):
         """

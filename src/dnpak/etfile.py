@@ -44,6 +44,9 @@ class EtFile:
 
         self.__location = str(Path(location))
 
+    def __repr__(self):
+        return f"'{self.__location}'"
+
     def set_offset(self, offset: int):
         """
         A setter for offset
