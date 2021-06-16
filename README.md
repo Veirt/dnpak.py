@@ -2,6 +2,7 @@
 
 ![PyPI](https://img.shields.io/pypi/v/dnpak.py?color=success)
 [![License: WTFPL](https://img.shields.io/badge/License-WTFPL-brightgreen.svg)](http://www.wtfpl.net/about/)
+[![CodeFactor](https://www.codefactor.io/repository/github/exlog/dnpak.py/badge)](https://www.codefactor.io/repository/github/exlog/dnpak.py)
 
 A python package to manipulate Dragon Nest pak file.
 
