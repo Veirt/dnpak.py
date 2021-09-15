@@ -10,7 +10,7 @@ Based on data definitions from [vincentzhang96/DragonNestFileFormats](http://vin
 
 - [Installation](#installation)
 - [Getting Started](#getting-started)
-  - [Write a new PAK and add files to it](#write-a-new-pak-and-add-files-to-it)
+  - [Write a new PAK and add files into it](#write-a-new-pak-and-add-files-into-it)
   - [Write a new PAK and add all files inside a folder](#write-a-new-pak-and-add-all-files-inside-a-folder)
   - [Read PAK and extract files inside](#read-pak-and-extract-files-inside)
 - [Developing](#developing)
@@ -29,7 +29,7 @@ $ pip install dnpak.py
 
 With this package you can write and read to pak file
 
-### Write a new PAK and add files to it
+### Write a new PAK and add files into it
 
 ```python
 import dnpak
