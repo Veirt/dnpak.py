@@ -3,22 +3,20 @@ import os
 import struct
 import zlib
 from glob import glob
-from typing import Final
-from typing import List
+from typing import Final, List
 
-from .utils import *
 from .etfile import EtFile
+from .utils import *
 
 
 class EtFileSystem:
     __type = None
-    __file = None
     __current_file = None
 
-    HEADER_MAGIC: Final[str] = "EyedentityGames Packing File 0.1"
-    HEADER_VERSION: Final[int] = 0xB
+    _HEADER_MAGIC: Final[str] = "EyedentityGames Packing File 0.1"
+    _HEADER_VERSION: Final[int] = 0xB
+    _FILE_OFFSET: int = 0
     FILE_COUNT: int = 0
-    FILE_OFFSET: int = 0
 
     __files: List[EtFile] = []
 
@@ -31,7 +29,7 @@ class EtFileSystem:
         return str({
             "current_file": self.__current_file,
             "file_count": self.FILE_COUNT,
-            "file_offset": self.FILE_OFFSET,
+            "file_offset": self._FILE_OFFSET,
         })
 
     @classmethod
@@ -71,12 +69,12 @@ class EtFileSystem:
             cls.__file.read(4))[0]  # [0] because the return type is a tuple
 
         cls.__file.seek(264)
-        cls.FILE_OFFSET = struct.unpack("<I", cls.__file.read(4))[0]
+        cls._FILE_OFFSET = struct.unpack("<I", cls.__file.read(4))[0]
 
-        cls.__file.seek(cls.FILE_OFFSET)
+        cls.__file.seek(cls._FILE_OFFSET)
         offset_now = 0
         for _ in range(cls.FILE_COUNT):
-            cls.__file.seek(cls.FILE_OFFSET + offset_now)
+            cls.__file.seek(cls._FILE_OFFSET + offset_now)
 
             # Sanitize the file name
             location = (cls.__file.read(256).decode("utf-8",
@@ -119,7 +117,7 @@ class EtFileSystem:
         """
 
         # :-4 to remove ".pak"
-        folder_name = directory if directory is not None else self.__current_file[:-4]
+        folder_name = directory if directory is not None else str(self.__current_file)[:-4]
 
         for file in self.__files:
             if (mode == "strict" and file.get_file_size() == 0
@@ -158,7 +156,7 @@ class EtFileSystem:
 
         filtered_file = next(
             filter(lambda file: file.get_location() == location, self.__files),
-            None)
+            )
 
         return filtered_file
 
@@ -256,11 +254,11 @@ class EtFileSystem:
         1024 bytes in total - UINT8
         """
 
-        cls.__file.write(bytes(cls.HEADER_MAGIC, "utf-8"))
+        cls.__file.write(bytes(cls._HEADER_MAGIC, "utf-8"))
         cls.__file.write(struct.pack("<x") * 224)
-        cls.__file.write(struct.pack("<I", cls.HEADER_VERSION))
+        cls.__file.write(struct.pack("<I", cls._HEADER_VERSION))
         cls.__file.write(struct.pack("<I", cls.FILE_COUNT))
-        cls.__file.write(struct.pack("<I", cls.FILE_OFFSET))
+        cls.__file.write(struct.pack("<I", cls._FILE_OFFSET))
         cls.__file.write(struct.pack("<I", 0))
         cls.__file.write(struct.pack("<x") * 752)
 
@@ -270,12 +268,12 @@ class EtFileSystem:
         """
 
         self.FILE_COUNT = len(self.__files)
-        self.FILE_OFFSET = self.__file.tell()
+        self._FILE_OFFSET = self.__file.tell()
 
         self.__file.seek(256 + 4)
         self.__file.write(struct.pack("<I", self.FILE_COUNT))
-        self.__file.write(struct.pack("<I", self.FILE_OFFSET))
-        self.__file.seek(self.FILE_OFFSET, os.SEEK_SET)
+        self.__file.write(struct.pack("<I", self._FILE_OFFSET))
+        self.__file.seek(self._FILE_OFFSET, os.SEEK_SET)
 
     def __write_data(self):
         """
@@ -292,4 +290,3 @@ class EtFileSystem:
         self.__rewrite_header()
         for f in self.__files:
             self.__file.write(f.get_file_info())
-

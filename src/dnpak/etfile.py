@@ -3,18 +3,19 @@ import os
 import struct
 import zlib
 from pathlib import Path
+from typing import Optional
 
 
 class EtFile:
-    __location: str = None
-    __filedata: bytes = None
-    __filedatacomp: bytes = None
-    __filesize: int = None
-    __filesizecomp: int = None
-    __offset: int = None
-    __alloc_size: int = None
+    __location: str = ""
+    __filedata: bytes = b""
+    __filedatacomp: bytes = b""
+    __filesize: int = 0
+    __filesizecomp: int = 0
+    __offset: int = 0
+    __alloc_size: int = 0
 
-    def __init__(self, file_name: str = None, location: str = None):
+    def __init__(self, file_name: Optional[str] = None, location: Optional[str] = None):
         """
         Initialize file inside pak
 
@@ -42,7 +43,7 @@ class EtFile:
             self.__filesizecomp = len(binascii.hexlify(
                 self.__filedatacomp)) // 2
 
-        self.__location = str(Path(location))
+        self.__location = str(Path(str(location)))
 
     def __repr__(self):
         return f"'{self.__location}'"
