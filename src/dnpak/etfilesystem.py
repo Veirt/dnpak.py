@@ -6,13 +6,14 @@ from glob import glob
 from typing import Final
 from typing import List
 
+from .utils import *
 from .etfile import EtFile
 
 
 class EtFileSystem:
     __type = None
     __file = None
-    __current_file: str = None
+    __current_file = None
 
     HEADER_MAGIC: Final[str] = "EyedentityGames Packing File 0.1"
     HEADER_VERSION: Final[int] = 0xB
@@ -118,21 +119,20 @@ class EtFileSystem:
         """
 
         # :-4 to remove ".pak"
-        folder_name = directory if directory is not None else self.__current_file[:
-                                                                                  -4]
+        folder_name = directory if directory is not None else self.__current_file[:-4]
 
         for file in self.__files:
             if (mode == "strict" and file.get_file_size() == 0
                     and file.get_compressed_file_size() == 0):
                 pass
             else:
+                file_path = f"{folder_name}{convert_path(file.get_location())}"
                 os.makedirs(
-                    os.path.dirname(f"{folder_name}\\{file.get_location()}"),
+                    os.path.dirname(file_path),
                     exist_ok=True,
                 )
                 try:
-                    with open(f"{folder_name}{file.get_location()}",
-                              "wb") as f:
+                    with open(file_path, "wb") as f:
                         f.write(file.get_decompressed_data())
                 except PermissionError:
                     pass
@@ -292,3 +292,4 @@ class EtFileSystem:
         self.__rewrite_header()
         for f in self.__files:
             self.__file.write(f.get_file_info())
+
