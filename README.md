@@ -2,7 +2,7 @@
 
 ![PyPI](https://img.shields.io/pypi/v/dnpak.py?color=success)
 [![License: WTFPL](https://img.shields.io/badge/License-WTFPL-brightgreen.svg)](http://www.wtfpl.net/about/)
-[![CodeFactor](https://www.codefactor.io/repository/github/exlog/dnpak.py/badge)](https://www.codefactor.io/repository/github/exlog/dnpak.py)
+[![CodeFactor](https://www.codefactor.io/repository/github/veirt/dnpak.py/badge)](https://www.codefactor.io/repository/github/veirt/dnpak.py)
 
 A python package to manipulate Dragon Nest pak file.
 
@@ -41,6 +41,7 @@ pak.close_file_system()  # Make sure to close file
 ```
 
 ### Write a new PAK and add all files inside a folder
+
 ```python
 pak = dnpak.EtFileSystem.write("filename.pak")
 pak.add_files("path/to/folder")
