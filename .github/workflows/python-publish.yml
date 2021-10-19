@@ -7,6 +7,10 @@ on:
   release:
     types: [created]
 
+  workflow_dispatch:
+
+  
+
 jobs:
   deploy:
 
@@ -23,6 +27,7 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install pipenv
         pipenv install --dev
+        pipenv update --dev
     - name: Build and publish
       env:
         TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
