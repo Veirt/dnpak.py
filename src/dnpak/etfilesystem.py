@@ -6,7 +6,7 @@ from glob import glob
 from typing import Final, List
 
 from .etfile import EtFile
-from .utils import *
+from . import utils
 
 
 class EtFileSystem:
@@ -71,7 +71,6 @@ class EtFileSystem:
         cls.__file.seek(264)
         cls._FILE_OFFSET = struct.unpack("<I", cls.__file.read(4))[0]
 
-        cls.__file.seek(cls._FILE_OFFSET)
         offset_now = 0
         for _ in range(cls.FILE_COUNT):
             cls.__file.seek(cls._FILE_OFFSET + offset_now)
@@ -117,14 +116,15 @@ class EtFileSystem:
         """
 
         # :-4 to remove ".pak"
-        folder_name = directory if directory is not None else str(self.__current_file)[:-4]
+        folder_name = (directory if directory is not None else str(
+            self.__current_file)[:-4])
 
         for file in self.__files:
             if (mode == "strict" and file.get_file_size() == 0
                     and file.get_compressed_file_size() == 0):
                 pass
             else:
-                file_path = f"{folder_name}{convert_path(file.get_location())}"
+                file_path = f"{folder_name}{utils.to_unix_path(file.get_location())}"
                 os.makedirs(
                     os.path.dirname(file_path),
                     exist_ok=True,
@@ -155,8 +155,8 @@ class EtFileSystem:
         """
 
         filtered_file = next(
-            filter(lambda file: file.get_location() == location, self.__files),
-            )
+            filter(lambda file: file.get_location() == location,
+                   self.__files), )
 
         return filtered_file
 
@@ -168,7 +168,7 @@ class EtFileSystem:
         :type file_name: str
 
         :param location: Location of the file that
-        will be put in the pak. Must start with slash ('/') or backslash ('\')
+        will be put in the pak.
         :type location: str
         """
 
@@ -177,8 +177,8 @@ class EtFileSystem:
         if not os.path.exists(file_name):
             raise FileNotFoundError("File doesn't exist")
 
-        if location[0] != "/" and location[0] != "\\":
-            raise NameError('File location must start with "/" or "\\" ')
+        if location[0] != "\\":
+            location = f"\\{utils.to_windows_path(location)}"
 
         self.__files.append(EtFile(file_name, location))
 
@@ -196,9 +196,10 @@ class EtFileSystem:
             raise FileNotFoundError("Folder doesn't exist")
 
         files = glob(f"{folder}/**/*.*", recursive=True)
-        locations = [file.replace(folder, "") for file in files]
-        for file, location in zip(files, locations):
-            self.__files.append(EtFile(file, location))
+
+        for file in files:
+            path = utils.to_windows_path(os.path.relpath(file, folder))
+            self.__files.append(EtFile(file, f"\\{path}"))
 
     def edit_file(self, file: EtFile, filedata: bytes):
         """
@@ -214,13 +215,14 @@ class EtFileSystem:
         self.__type = "write"
         try:
             filedatacomp = zlib.compress(filedata, 1)
+            filesize = len(filedata)
             filesizecomp = len(binascii.hexlify(filedatacomp)) // 2
             file_info = {
+                "filesize": filesize,
                 "filedatacomp": filedatacomp,
                 "filesizecomp": filesizecomp
             }
             file_index = self.__files.index(file)
-            print(file_info)
             self.__files[file_index].set_file_info(**file_info)
         except zlib.error as err:
             raise err

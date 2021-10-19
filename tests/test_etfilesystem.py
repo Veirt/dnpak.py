@@ -34,13 +34,6 @@ def test_create_error_pak(tmp_path):
         pak.close_file_system()
 
 
-def test_error_pak_location(tmp_path):
-    with pytest.raises(NameError):
-        pak = EtFileSystem.write(f"{tmp_path}/pak3.test.pak")
-        pak.add_file(file_list[0]["path"], "resource/etc/freeze.msh")
-        pak.close_file_system()
-
-
 def test_read_error_pak(tmp_path):
     with pytest.raises(FileNotFoundError):
         pak = EtFileSystem.read(f"{tmp_path}/unavailable.test.pak")
@@ -150,11 +143,11 @@ def test_edit_file(tmp_path):
     create_pak(tmp_path)
 
     pak = EtFileSystem.read(f"{tmp_path}/pak1.test.pak")
-    pak.add_file("tests/test_etfilesystem/test.txt", "/test.txt")
+    pak.add_file("tests/test_etfilesystem/test.txt", "\\test.txt")
     pak.close_file_system()
 
     pak = EtFileSystem.read(f"{tmp_path}/pak1.test.pak")
-    test_txt = pak.find_file(EtFile(location="/test.txt").get_location())
+    test_txt = pak.find_file(EtFile(location="\\test.txt").get_location())
     decompressed = test_txt.get_decompressed_data().decode("utf-8")
 
     assert decompressed == "test"
@@ -165,6 +158,6 @@ def test_edit_file(tmp_path):
 
     pak = EtFileSystem.read(f"{tmp_path}/pak1.test.pak")
     new_test_txt = pak.find_file(
-        EtFile(location="/test.txt").get_location()).get_decompressed_data()
+        EtFile(location="\\test.txt").get_location()).get_decompressed_data()
 
     assert new_data == new_test_txt

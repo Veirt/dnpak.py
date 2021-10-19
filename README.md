@@ -35,8 +35,8 @@ With this package you can write and read to pak file
 import dnpak
 
 pak = dnpak.EtFileSystem.write("filename.pak")
-pak.add_file("path/to/file", "/file/location/in/pak")
-pak.add_file("another/file", "/another/file/location/in/pak")
+pak.add_file("path/to/file", "file/location/in/pak")
+pak.add_file("another/file", "another/file/location/in/pak")
 pak.close_file_system()  # Make sure to close file
 ```
 
